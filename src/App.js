@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Card from './components/Card';
+import InputField from './components/InputField';
+import LogIn from './components/LogIn';
+import ReLoad from './components/ReLoad';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [posts, SetPosts] = useState([]);
+
+  const onSubmit = (post) => {
+    if (!post.media && !post.text && /^\s*$/.test(post.text)) {
+      return;
+    }
+
+    const newPosts = [post, ...posts];
+    SetPosts(newPosts);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="bg-main-bg min-h-screen max-h-full pb-14">
+      {!isLoggedIn ? (
+        <LogIn setIsLoggedIn={setIsLoggedIn} />
+      ) : (
+        <>
+          <InputField onSubmit={onSubmit} />
+          <ReLoad />
+          {posts.map((val, ind) => {
+            return (
+              <div key={ind}>
+                <Card text={val.text} media={val.media} />
+              </div>
+            );
+          })}
+        </>
+      )}
     </div>
   );
 }
